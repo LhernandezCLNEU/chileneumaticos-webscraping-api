@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: chileneumaticos-api
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - ./:/usr/src/app
+
+  db:
+    image: mysql:8.0
+    container_name: chileneumaticos-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: chileneumaticos
+      MYSQL_USER: apiuser
+      MYSQL_PASSWORD: apipassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  redis:
+    image: redis:7
+    container_name: chileneumaticos-redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--save", "60", "1"]
+
+volumes:
+  db_data:

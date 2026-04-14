@@ -1,0 +1,48 @@
+[tool.poetry]
+name = "chileneumaticos-webscraping-api"
+version = "0.1.0"
+description = "API para almacenar y procesar productos scrapeados de una tienda de neumáticos"
+authors = ["tu <tu@ejemplo.com>"]
+license = "MIT"
+packages = [
+	{ include = "app" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.135.3"
+uvicorn = {extras = ["standard"], version = "^0.22.0"}
+sqlalchemy = "^2.0.0"
+asyncmy = "^0.2.11"
+pydantic = "^2.5.0"
+pydantic-settings = "^2.13.1"
+alembic = "^1.11.0"
+aiosqlite = "^0.22.1"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-jose = "^3.3.0"
+python-dotenv = "^1.0.0"
+httpx = "^0.24.0"
+
+python-multipart = "^0.0.26"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-asyncio = "^0.21.0"
+mypy = "^0.991"
+black = "^24.3.0"
+isort = "^5.12.0"
+flake8 = "^6.1.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+python_version = 3.11
+strict = true
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
