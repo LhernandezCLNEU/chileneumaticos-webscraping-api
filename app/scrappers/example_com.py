@@ -67,10 +67,17 @@ class ExampleComScraper(BaseScraper):
                 if getattr(settings, "SKIP_SSL_VERIFY", False):
                     options.add_argument("--ignore-certificate-errors")
                     options.set_capability("acceptInsecureCerts", True)
-                service = _Service(_ChromeDriverManager().install())
 
-                driver = _webdriver.Chrome(service=service, options=options)
+                # Support remote webdriver (e.g., selenium standalone container) when configured
+                use_remote = getattr(settings, "SELENIUM_REMOTE", False) and getattr(settings, "WEBDRIVER_URL", None)
+                driver = None
                 try:
+                    if use_remote:
+                        driver = _webdriver.Remote(command_executor=settings.WEBDRIVER_URL, options=options)
+                    else:
+                        service = _Service(_ChromeDriverManager().install())
+                        driver = _webdriver.Chrome(service=service, options=options)
+
                     driver.get(url)
                     # try to obtain description via provided selector
                     selenium_desc = None
@@ -82,10 +89,11 @@ class ExampleComScraper(BaseScraper):
 
                     return {"page_source": driver.page_source, "selenium_desc": selenium_desc}
                 finally:
-                    try:
-                        driver.quit()
-                    except Exception:
-                        pass
+                    if driver:
+                        try:
+                            driver.quit()
+                        except Exception:
+                            pass
 
             try:
                 res = await asyncio.to_thread(_selenium_get, self.url)

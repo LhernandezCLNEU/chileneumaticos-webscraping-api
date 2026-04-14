@@ -1,7 +1,8 @@
 from typing import List, Optional
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel, HttpUrl
+import json
 
 from app.services.scrape_service import service as scrape_service
 from typing import Optional
@@ -12,6 +13,7 @@ from app.db import get_db
 from app.models.parsed_result import ParsedResult
 from app.models.product import Product
 from app.schemas.parsed_result import ParsedResultRead
+from app.core.ws import manager
 
 router = APIRouter()
 
@@ -50,3 +52,46 @@ async def analysis_results(product_id: Optional[int] = None, db: AsyncSession = 
     res = await db.execute(q.order_by(ParsedResult.parsed_at.desc()))
     items = res.scalars().all()
     return items
+
+
+@router.post("/analysis/callback")
+async def analysis_callback(payload: dict):
+    """Webhook endpoint: receives callback from scrape service and broadcasts via WebSocket."""
+    # basic validation
+    task_id = payload.get("task_id")
+    result = payload.get("result")
+    if not task_id:
+        raise HTTPException(status_code=400, detail="task_id required")
+
+    # broadcast to connected websocket clients
+    try:
+        await manager.broadcast({"type": "task_completed", "task_id": task_id, "result": result})
+    except Exception:
+        # do not fail on websocket broadcast errors
+        pass
+
+    return {"ok": True}
+
+
+@router.websocket("/analysis/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    """WebSocket endpoint for clients to receive task notifications.
+
+    Clients can connect and will receive messages of the form:
+    {"type": "task_completed", "task_id": "...", "result": [...]}
+    """
+    await manager.connect(websocket)
+    try:
+        while True:
+            # keep connection alive; optionally accept client pings/commands
+            try:
+                data = await websocket.receive_text()
+                # ignore or echo
+                await websocket.send_text(json.dumps({"type": "pong", "data": data}))
+            except WebSocketDisconnect:
+                break
+            except Exception:
+                # ignore other receive errors and continue
+                continue
+    finally:
+        manager.disconnect(websocket)

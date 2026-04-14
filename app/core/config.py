@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic_settings import BaseSettings
 
 
@@ -20,6 +22,9 @@ class Settings(BaseSettings):
 
     REDIS_HOST: str = "redis"
     REDIS_PORT: int = 6379
+    # Selenium remote WebDriver settings
+    SELENIUM_REMOTE: bool = False
+    WEBDRIVER_URL: Optional[str] = None
 
     class Config:
         env_file = ".env"
