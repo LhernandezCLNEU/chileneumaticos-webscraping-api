@@ -1,0 +1,137 @@
+{
+  "info": {
+    "_postman_id": "b3b6a4e4-8c2a-4f3b-9c2a-1f2e4b6d9a11",
+    "name": "chileneumaticos-webscraping-api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health (API root)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Health (API v1)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/health",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "health"]
+        }
+      }
+    },
+    {
+      "name": "Auth: Get Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "username", "value": "user@example.com", "type": "text" },
+            { "key": "password", "value": "secret", "type": "text" },
+            { "key": "grant_type", "value": "password", "type": "text" }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/auth/token",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "auth", "token"]
+        }
+      }
+    },
+    {
+      "name": "TitleFormats: Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Example Format\",\n  \"pattern\": \"{brand} {model}\",\n  \"example\": \"PIRELLI P7\",\n  \"priority\": 10,\n  \"enabled\": true,\n  \"version\": \"1.0\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/title-formats",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "title-formats"]
+        }
+      }
+    },
+    {
+      "name": "TitleFormats: List",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/title-formats",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "title-formats"]
+        }
+      }
+    },
+    {
+      "name": "TitleFormats: Get by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/title-formats/:id",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "title-formats", ":id"]
+        }
+      }
+    },
+    {
+      "name": "TitleFormats: Update",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Updated Format\",\n  \"pattern\": \"{brand} {model} {size}\",\n  \"priority\": 5\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/title-formats/:id",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "title-formats", ":id"]
+        }
+      }
+    },
+    {
+      "name": "TitleFormats: Delete (soft)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/v1/title-formats/:id",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "title-formats", ":id"]
+        }
+      }
+    }
+  ]
+}

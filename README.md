@@ -68,3 +68,47 @@ docker-compose up --build
 Notas:
 - En desarrollo `ENVIRONMENT=development` (usa SQLite). En producción, pon `ENVIRONMENT=production` y configura `MYSQL_*`.
 - Para ejecutar las migraciones localmente: `poetry run alembic upgrade head`.
+
+Selenium (opcional, para scrapers que usan navegador)
+-----------------------------------------------
+
+Si quieres ejecutar scrapers que renderizan con un navegador (Selenium), sigue estos pasos en tu entorno de desarrollo (macOS / Linux):
+
+1) Activar tu entorno virtual:
+
+```bash
+source .venv/bin/activate
+```
+
+2) Instalar dependencias Python necesarias:
+
+```bash
+pip install selenium webdriver-manager
+```
+
+3) Instalar un navegador (Chrome/Chromium) si no lo tienes. En macOS con Homebrew:
+
+```bash
+brew install --cask google-chrome
+# o para chromium
+brew install --cask chromium
+```
+
+4) (Opcional) Si tu entorno da errores de certificado, habilita temporalmente `SKIP_SSL_VERIFY` en `.env` o exportando la variable:
+
+```bash
+export SKIP_SSL_VERIFY=true
+# o en .env:
+SKIP_SSL_VERIFY=true
+```
+
+5) Ejecutar el scraper de ejemplo:
+
+```bash
+python scripts/run_example_scraper.py --url https://example.com/ --dry-run
+```
+
+Notas de seguridad:
+- No actives `SKIP_SSL_VERIFY` en producción.
+- `webdriver-manager` descargará el driver compatible automáticamente.
+

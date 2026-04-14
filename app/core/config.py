@@ -5,6 +5,9 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "chileneumaticos-api"
     SECRET_KEY: str = "please_change_me"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    # Skip SSL verification for HTTP clients (development only)
+    # Set to True by default for local dev convenience; override via .env in other environments
+    SKIP_SSL_VERIFY: bool = True
 
     # Environment mode: 'development' or 'production'
     ENVIRONMENT: str = "development"
